@@ -569,7 +569,8 @@ function parseBaouw(text, filename) {
                 ean: ean,
                 qty: qty,
                 qtyPacks: qtyPacks,
-                prixBrut: prixBrut,
+                prixBrut: prixBrut / unitsPerPack,
+                prixBrutPack: prixBrut,
                 remise: remise,
                 source: filename,
                 invoiceDate: invoiceDate,
@@ -699,7 +700,7 @@ function renderTable() {
         tableBody.appendChild(tr);
 
         totalQty += line.qty;
-        const brutLigne = line.qtyPacks * line.prixBrut;
+        const brutLigne = line.qtyPacks * line.prixBrutPack;
         totalBrutHT += brutLigne;
         totalNetHT += brutLigne * (1 - line.remise / 100);
     });
