@@ -10,7 +10,6 @@
             --primary-hover: #1d4ed8;
             --danger: #dc2626;
             --success: #16a34a;
-            --warning: #d97706;
             --bg: #f8fafc;
             --card: #ffffff;
             --border: #e2e8f0;
@@ -18,98 +17,255 @@
             --text-light: #64748b;
             --radius: 8px;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg); color: var(--text); line-height: 1.5; padding: 2rem 1rem;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
         }
-        .container { max-width: 1400px; margin: 0 auto; }
-        h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-        .subtitle { color: var(--text-light); font-size: 0.875rem; margin-bottom: 1.5rem; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
-        .card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
         .form-group label {
-            display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.375rem;
-            color: var(--text-light); text-transform: uppercase; letter-spacing: 0.025em;
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
         }
-        .form-group select, .form-group input {
-            width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border);
-            border-radius: var(--radius); font-size: 0.9375rem; background: var(--card); color: var(--text);
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.9375rem;
+            background: var(--card);
+            color: var(--text);
         }
-        .form-group select:focus, .form-group input:focus {
-            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
+
         .drop-zone {
-            border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem;
-            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
         }
-        .drop-zone:hover, .drop-zone.dragover { border-color: var(--primary); background: rgba(37,99,235,0.04); }
-        .drop-zone-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-        .drop-zone-text { color: var(--text-light); font-size: 0.875rem; }
-        .drop-zone-text strong { color: var(--primary); }
-        .file-list { margin-top: 0.75rem; font-size: 0.8125rem; }
-        .file-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0; color: var(--text-light); }
-        .file-item .status { font-weight: 600; }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .drop-zone-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone-text {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .drop-zone-text strong {
+            color: var(--primary);
+        }
+
+        .file-list {
+            margin-top: 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0;
+            color: var(--text-light);
+        }
+
+        .file-item .status {
+            font-weight: 600;
+        }
+
         .file-item .status.done { color: var(--success); }
         .file-item .status.error { color: var(--danger); }
 
-        /* Article list section */
-        .articles-bar {
-            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        #status-bar {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: none;
+            margin-bottom: 1rem;
         }
-        .articles-info {
-            font-size: 0.8125rem; color: var(--text-light); flex: 1;
-        }
-        .articles-info strong { color: var(--success); }
-        .btn-sm {
-            padding: 0.375rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--border);
-            border-radius: var(--radius); background: var(--card); color: var(--text);
-            cursor: pointer; font-weight: 500;
-        }
-        .btn-sm:hover { background: var(--bg); }
-        .btn-sm.danger { color: var(--danger); border-color: var(--danger); }
 
-        /* Status bar */
-        #status-bar { padding: 0.75rem 1rem; border-radius: var(--radius); font-size: 0.875rem; font-weight: 500; display: none; margin-bottom: 1rem; }
-        #status-bar.info { display: block; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-        #status-bar.success { display: block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-        #status-bar.error { display: block; background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+        #status-bar.info {
+            display: block;
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
 
-        /* Table */
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+        #status-bar.success {
+            display: block;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        #status-bar.error {
+            display: block;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+
         th {
-            background: var(--bg); padding: 0.625rem 0.5rem; text-align: left; font-weight: 600;
-            font-size: 0.75rem; text-transform: uppercase; color: var(--text-light);
-            border-bottom: 2px solid var(--border); white-space: nowrap; position: sticky; top: 0;
+            background: var(--bg);
+            padding: 0.625rem 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
         }
-        td { padding: 0.5rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
-        td input {
-            width: 100%; min-width: 60px; padding: 0.25rem 0.375rem;
-            border: 1px solid transparent; border-radius: 4px; font-size: 0.8125rem; background: transparent;
-        }
-        td input:hover { border-color: var(--border); }
-        td input:focus { outline: none; border-color: var(--primary); background: var(--card); }
-        td input.not-found { background: #fef3c7; border-color: var(--warning); }
 
-        /* Totals */
+        td {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td input {
+            width: 100%;
+            min-width: 60px;
+            padding: 0.25rem 0.375rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            background: transparent;
+        }
+
+        td input:hover {
+            border-color: var(--border);
+        }
+
+        td input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--card);
+        }
+
+        tr.sample {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover { background: #b91c1c; }
+
+        .line-count {
+            font-size: 0.8125rem;
+            color: var(--text-light);
+        }
+
         .totals-row { background: var(--bg); font-weight: 700; }
         .totals-row td { border-top: 2px solid var(--text); border-bottom: none; padding: 0.75rem 0.5rem; }
 
-        /* Buttons */
-        .btn-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-        .btn {
-            display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.625rem 1.25rem;
-            border: none; border-radius: var(--radius); font-size: 0.875rem; font-weight: 600;
-            cursor: pointer; transition: background 0.15s;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #b91c1c; }
-        .line-count { font-size: 0.8125rem; color: var(--text-light); }
         .hidden { display: none !important; }
 
         @media (max-width: 640px) {
@@ -123,23 +279,13 @@
         <h1>Facture Reader</h1>
         <p class="subtitle">Extraction de factures fournisseurs PDF vers CSV pour import ERP</p>
 
-        <!-- Article list import -->
-        <div class="card">
-            <div class="card-title">Liste des articles ERP</div>
-            <div class="articles-bar">
-                <div class="articles-info" id="articles-info">Aucune liste chargee.</div>
-                <button class="btn-sm" id="btn-import-articles">Importer CSV</button>
-                <button class="btn-sm danger hidden" id="btn-clear-articles">Supprimer</button>
-                <input type="file" id="articles-input" accept=".csv,.txt" style="display:none">
-            </div>
-        </div>
-
-        <!-- Config -->
         <div class="card">
             <div class="form-row">
                 <div class="form-group">
                     <label>Marque</label>
-                    <select id="marque"><option value="baouw">Baouw</option></select>
+                    <select id="marque">
+                        <option value="baouw">Baouw</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Boutique</label>
@@ -154,9 +300,12 @@
                     <input type="text" id="code-commercial" placeholder="Ex: CT50" value="">
                 </div>
             </div>
+
             <div class="drop-zone" id="drop-zone">
                 <div class="drop-zone-icon">&#128196;</div>
-                <div class="drop-zone-text">Glissez vos factures PDF ici ou <strong>cliquez pour parcourir</strong></div>
+                <div class="drop-zone-text">
+                    Glissez vos factures PDF ici ou <strong>cliquez pour parcourir</strong>
+                </div>
                 <input type="file" id="file-input" accept=".pdf" multiple style="display:none">
                 <div class="file-list" id="file-list"></div>
             </div>
@@ -164,13 +313,13 @@
 
         <div id="status-bar"></div>
 
-        <!-- Results -->
         <div class="card hidden" id="results-card">
             <div class="btn-row" style="margin-bottom: 1rem;">
                 <button class="btn btn-primary" id="btn-download" disabled>Telecharger CSV</button>
                 <button class="btn btn-danger" id="btn-clear">Effacer</button>
                 <span class="line-count" id="line-count"></span>
             </div>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -180,7 +329,7 @@
                             <th>B: Etab.</th>
                             <th>C: Commentaire</th>
                             <th>D: Designation</th>
-                            <th>E: Ref. Article</th>
+                            <th>E: Reference</th>
                             <th>F: EAN</th>
                             <th>G: Qte</th>
                             <th>H: Prix Brut HT</th>
@@ -207,16 +356,17 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 // CONFIG
 // =====================================================
 const BRANDS = {
-    baouw: { name: 'BAOUW', fournisseur: 'BAOUW', parser: parseBaouw }
+    baouw: {
+        name: 'BAOUW',
+        fournisseur: 'BAOUW',
+        parser: parseBaouw,
+    }
 };
-
-const STORAGE_KEY = 'facture-reader-articles';
 
 // =====================================================
 // STATE
 // =====================================================
 let allLines = [];
-let articlesMap = loadArticles(); // EAN -> { code, designation, couleur }
 
 // =====================================================
 // DOM REFS
@@ -234,122 +384,27 @@ const tableFoot = document.getElementById('table-foot');
 const btnDownload = document.getElementById('btn-download');
 const btnClear = document.getElementById('btn-clear');
 const lineCountEl = document.getElementById('line-count');
-const articlesInfoEl = document.getElementById('articles-info');
-const btnImportArticles = document.getElementById('btn-import-articles');
-const btnClearArticles = document.getElementById('btn-clear-articles');
-const articlesInput = document.getElementById('articles-input');
 
 // =====================================================
-// ARTICLES LIST (localStorage)
+// EVENT LISTENERS
 // =====================================================
-function loadArticles() {
-    try {
-        const data = localStorage.getItem(STORAGE_KEY);
-        if (!data) return {};
-        return JSON.parse(data);
-    } catch { return {}; }
-}
-
-function saveArticles(map) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-}
-
-function updateArticlesUI() {
-    const count = Object.keys(articlesMap).length;
-    if (count > 0) {
-        articlesInfoEl.innerHTML = `<strong>${count.toLocaleString('fr-FR')}</strong> articles en memoire (localStorage)`;
-        btnClearArticles.classList.remove('hidden');
-    } else {
-        articlesInfoEl.textContent = 'Aucune liste chargee.';
-        btnClearArticles.classList.add('hidden');
-    }
-}
-
-function parseArticlesCSV(text) {
-    // Handle UTF-16LE BOM and null bytes
-    text = text.replace(/\ufeff/g, '').replace(/\0/g, '');
-
-    const lines = text.split('\n');
-    const map = {};
-    let count = 0;
-
-    for (let i = 1; i < lines.length; i++) {
-        const fields = lines[i].split(';');
-        if (fields.length < 5) continue;
-
-        const code = fields[0].trim();
-        const designation = fields[1].trim();
-        const couleur = (fields[2] || '').trim();
-        const ean = fields[4].trim();
-
-        if (!ean || ean.length < 5) continue;
-
-        map[ean] = { code, designation, couleur };
-        count++;
-    }
-
-    return { map, count };
-}
-
-function lookupArticle(ean) {
-    if (!ean) return null;
-    return articlesMap[ean] || null;
-}
-
-btnImportArticles.addEventListener('click', () => articlesInput.click());
-articlesInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    showStatus('Import de la liste articles...', 'info');
-
-    try {
-        // Try UTF-16LE first (Cegid export), fallback to UTF-8
-        let text;
-        const buffer = await file.arrayBuffer();
-        const bytes = new Uint8Array(buffer);
-
-        // Detect UTF-16LE BOM (FF FE) or null bytes pattern
-        if ((bytes[0] === 0xFF && bytes[1] === 0xFE) || (bytes.length > 3 && bytes[1] === 0x00)) {
-            text = new TextDecoder('utf-16le').decode(buffer);
-        } else {
-            text = new TextDecoder('utf-8').decode(buffer);
-        }
-
-        const { map, count } = parseArticlesCSV(text);
-        articlesMap = map;
-        saveArticles(map);
-        updateArticlesUI();
-        showStatus(`${count.toLocaleString('fr-FR')} articles importes avec succes.`, 'success');
-
-        // Re-render table if data exists
-        if (allLines.length) renderTable();
-    } catch (err) {
-        console.error(err);
-        showStatus('Erreur lors de l\'import: ' + err.message, 'error');
-    }
-
-    articlesInput.value = '';
+dropZone.addEventListener('click', (e) => {
+    if (e.target === fileInput) return;
+    fileInput.click();
 });
-
-btnClearArticles.addEventListener('click', () => {
-    localStorage.removeItem(STORAGE_KEY);
-    articlesMap = {};
-    updateArticlesUI();
-    if (allLines.length) renderTable();
-    showStatus('Liste articles supprimee.', 'info');
-});
-
-updateArticlesUI();
-
-// =====================================================
-// PDF EVENT LISTENERS
-// =====================================================
-dropZone.addEventListener('click', (e) => { if (e.target === fileInput) return; fileInput.click(); });
 fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+});
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+});
+
 btnDownload.addEventListener('click', downloadCSV);
 btnClear.addEventListener('click', clearAll);
 
@@ -358,10 +413,16 @@ btnClear.addEventListener('click', clearAll);
 // =====================================================
 async function handleFiles(files) {
     const pdfFiles = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
-    if (!pdfFiles.length) { showStatus('Aucun fichier PDF detecte.', 'error'); return; }
+    if (pdfFiles.length === 0) {
+        showStatus('Aucun fichier PDF detecte.', 'error');
+        return;
+    }
 
     const brand = BRANDS[marqueSelect.value];
-    if (!brand) { showStatus('Marque non supportee.', 'error'); return; }
+    if (!brand) {
+        showStatus('Marque non supportee.', 'error');
+        return;
+    }
 
     showStatus('Extraction en cours...', 'info');
     fileListEl.innerHTML = '';
@@ -401,17 +462,22 @@ async function extractPdfText(pdf) {
     for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
-        const items = content.items.filter(item => item.str.trim() !== '');
-        if (!items.length) continue;
 
+        const items = content.items.filter(item => item.str.trim() !== '');
+        if (items.length === 0) continue;
+
+        // Sort by Y (descending = top first) then X (ascending = left to right)
         items.sort((a, b) => {
             const dy = b.transform[5] - a.transform[5];
             if (Math.abs(dy) > 3) return dy;
             return a.transform[4] - b.transform[4];
         });
 
+        // Group into lines (items within 3 units of Y are on the same line)
         const lineGroups = [];
-        let currentLine = [items[0]], currentY = items[0].transform[5];
+        let currentLine = [items[0]];
+        let currentY = items[0].transform[5];
+
         for (let j = 1; j < items.length; j++) {
             const itemY = items[j].transform[5];
             if (Math.abs(itemY - currentY) <= 3) {
@@ -419,21 +485,29 @@ async function extractPdfText(pdf) {
             } else {
                 currentLine.sort((a, b) => a.transform[4] - b.transform[4]);
                 lineGroups.push(currentLine);
-                currentLine = [items[j]]; currentY = itemY;
+                currentLine = [items[j]];
+                currentY = itemY;
             }
         }
-        currentLine.sort((a, b) => a.transform[4] - b.transform[4]);
-        lineGroups.push(currentLine);
+        if (currentLine.length > 0) {
+            currentLine.sort((a, b) => a.transform[4] - b.transform[4]);
+            lineGroups.push(currentLine);
+        }
 
+        // Build lines with gap-aware spacing
         const lines = lineGroups.map(group => {
             let result = group[0].str;
             for (let k = 1; k < group.length; k++) {
-                const prev = group[k - 1], curr = group[k];
-                const gap = curr.transform[4] - (prev.transform[4] + (prev.width || 0));
+                const prev = group[k - 1];
+                const curr = group[k];
+                const prevEnd = prev.transform[4] + (prev.width || 0);
+                const gap = curr.transform[4] - prevEnd;
+                // Add space only if there's a meaningful gap between items
                 result += (gap > 2 ? ' ' : '') + curr.str;
             }
             return result;
         });
+
         fullText += lines.join('\n') + '\n';
     }
     return fullText;
@@ -446,12 +520,15 @@ function parseBaouw(text, filename) {
     const lines = text.split('\n');
     const products = [];
 
+    // Log extracted text for debugging (visible in browser console)
     console.log(`[Baouw Parser] ${filename} - ${lines.length} lines extracted`);
     console.log(text);
 
+    // Extract invoice date (pattern: DD/MM/YYYY after "Date de facture")
     const invoiceDate = extractDate(lines);
     console.log(`[Baouw Parser] Invoice date: ${invoiceDate}`);
 
+    // Reference pattern: starts with P- or U-, then 2 letters, dash, 2 letters, dash, 3 letters
     const refPattern = /^([PU]-[A-Z]{2}-[A-Z]{2}-[A-Z]{3})\b/;
 
     for (let i = 0; i < lines.length; i++) {
@@ -460,35 +537,44 @@ function parseBaouw(text, filename) {
         if (!refMatch) continue;
 
         const ref = refMatch[1];
+
+        // Extract EAN: 13 digits starting with 376
+        // In some PDFs, EAN and SH code are merged without space
         const eanMatch = line.match(/(376\d{10})/);
         const ean = eanMatch ? eanMatch[1] : '';
 
+        // Extract units per pack from description: (x9), (x20), (x12), etc.
         const unitsMatch = line.match(/\(x(\d+)\)/);
         const unitsPerPack = unitsMatch ? parseInt(unitsMatch[1]) : 1;
 
+        // Extract numeric fields after the country (France/Espagne)
         const numbersSection = extractNumbersAfterCountry(line);
-        if (!numbersSection) {
-            console.warn(`[Baouw Parser] Could not parse: ${ref}`, line);
-            continue;
+
+        if (numbersSection) {
+            const { qty: qtyPacks, prixBrut, remise } = numbersSection;
+
+            // Real quantity = number of packs × units per pack
+            const qty = qtyPacks * unitsPerPack;
+
+            // Skip free samples (100% discount)
+            if (remise >= 100) {
+                console.log(`[Baouw Parser] Skipped sample: ${ref} (${remise}%)`);
+                continue;
+            }
+
+            products.push({
+                reference: ref,
+                ean: ean,
+                qty: qty,
+                qtyPacks: qtyPacks,
+                prixBrut: prixBrut,
+                remise: remise,
+                source: filename,
+                invoiceDate: invoiceDate,
+            });
+        } else {
+            console.warn(`[Baouw Parser] Could not parse numbers for: ${ref}`, line);
         }
-
-        const { qty: qtyPacks, prixBrut, remise } = numbersSection;
-
-        if (remise >= 100) {
-            console.log(`[Baouw Parser] Skipped sample: ${ref} (${remise}%)`);
-            continue;
-        }
-
-        products.push({
-            reference: ref,
-            ean,
-            qty: qtyPacks * unitsPerPack,
-            qtyPacks,
-            prixBrut,
-            remise,
-            source: filename,
-            invoiceDate,
-        });
     }
 
     console.log(`[Baouw Parser] ${products.length} products extracted from ${filename}`);
@@ -497,14 +583,23 @@ function parseBaouw(text, filename) {
 
 function extractDate(lines) {
     for (let i = 0; i < lines.length; i++) {
-        if (/date de facture/i.test(lines[i])) {
-            // Same line
-            const m0 = lines[i].match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            if (m0) return `${m0[1]}-${m0[2]}`;
-            // Next lines
-            for (let d = 1; d <= 2; d++) {
-                const m = (lines[i + d] || '').match(/(\d{2})\/(\d{2})\/(\d{4})/);
-                if (m) return `${m[1]}-${m[2]}`;
+        if (lines[i].includes('Date de facture') || lines[i].includes('date de facture')) {
+            // Check same line first (pdf.js might merge header + values)
+            const sameLine = lines[i].match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (sameLine) {
+                return `${sameLine[1]}-${sameLine[2]}`;
+            }
+            // Then check next line
+            const nextLine = lines[i + 1] || '';
+            const dateMatch = nextLine.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (dateMatch) {
+                return `${dateMatch[1]}-${dateMatch[2]}`;
+            }
+            // Check 2 lines ahead (in case of blank line)
+            const nextLine2 = lines[i + 2] || '';
+            const dateMatch2 = nextLine2.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (dateMatch2) {
+                return `${dateMatch2[1]}-${dateMatch2[2]}`;
             }
         }
     }
@@ -512,22 +607,48 @@ function extractDate(lines) {
 }
 
 function extractNumbersAfterCountry(line) {
+    // Find the section after France or Espagne
+    // Handle both "France" and "49France" (merged SH code + country)
     const countryMatch = line.match(/(?:France|Espagne)\s+(.*)/);
     if (!countryMatch) return null;
+
     const rest = countryMatch[1].trim();
 
-    const structured = rest.match(/(\d+)\s+(\d+[,.]\d+)\s+(\d+[,.]\d+)\s+(\d+[.,]\d+)\s+\d+[,.]?\d*%/);
+    // Strategy: extract all numeric tokens from the rest of the line
+    // Expected order: QTY  PRIX_BRUT  REM%  PRIX_NET  TVA%  TOTAL
+    // Prices use comma (54,90) or dot (49.41), TVA has % sign
+
+    // Try structured pattern first:
+    // QTY(int)  PRIX_BRUT(dd,dd)  REM%(dd,dd)  PRIX_NET(dd.dd)  TVA(d,d%)  TOTAL(dd,dd)
+    const structured = rest.match(
+        /(\d+)\s+(\d+[,.]\d+)\s+(\d+[,.]\d+)\s+(\d+[.,]\d+)\s+\d+[,.]?\d*%/
+    );
+
     if (structured) {
-        return { qty: parseInt(structured[1]), prixBrut: parseDecimal(structured[2]), remise: parseDecimal(structured[3]) };
+        return {
+            qty: parseInt(structured[1]),
+            prixBrut: parseDecimal(structured[2]),
+            remise: parseDecimal(structured[3]),
+        };
     }
+
+    // Fallback: more lenient - just find QTY then two decimal numbers
     const fallback = rest.match(/(\d+)\s+(\d+[,.]\d+)\s+(\d+[,.]\d+)/);
     if (fallback) {
-        return { qty: parseInt(fallback[1]), prixBrut: parseDecimal(fallback[2]), remise: parseDecimal(fallback[3]) };
+        return {
+            qty: parseInt(fallback[1]),
+            prixBrut: parseDecimal(fallback[2]),
+            remise: parseDecimal(fallback[3]),
+        };
     }
+
     return null;
 }
 
-function parseDecimal(str) { return parseFloat(str.replace(',', '.')); }
+function parseDecimal(str) {
+    // Handle both comma and dot as decimal separator
+    return parseFloat(str.replace(',', '.'));
+}
 
 // =====================================================
 // TABLE RENDERING
@@ -544,30 +665,14 @@ function renderTable() {
 
     allLines.forEach((line, idx) => {
         const comment = `${boutique}, ${brand.name}, ${line.invoiceDate}`;
-
-        // Lookup article by EAN
-        const article = lookupArticle(line.ean);
-        const codeArticle = article ? article.code : line.reference;
-        const designation = article
-            ? (article.couleur ? `${article.designation} - ${article.couleur}` : article.designation)
-            : comment;
-        const notFound = !article;
-
-        // Totals (use pack qty × prix brut for invoice verification)
-        totalQty += line.qty;
-        const ligneBrutHT = line.qtyPacks * line.prixBrut;
-        const ligneNetHT = ligneBrutHT * (1 - line.remise / 100);
-        totalBrutHT += ligneBrutHT;
-        totalNetHT += ligneNetHT;
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${idx + 1}</td>
             <td><input value="CFFC1_" data-col="type" readonly></td>
             <td><input value="${boutique}" data-col="etab" readonly></td>
             <td><input value="${comment}" data-col="comment"></td>
-            <td><input value="${escAttr(designation)}" data-col="designation" class="${notFound ? 'not-found' : ''}" title="${notFound ? 'EAN non trouve dans la liste articles' : ''}"></td>
-            <td><input value="${escAttr(codeArticle)}" data-col="ref" class="${notFound ? 'not-found' : ''}"></td>
+            <td><input value="${comment}" data-col="designation"></td>
+            <td><input value="${line.reference}" data-col="ref"></td>
             <td><input value="${line.ean}" data-col="ean"></td>
             <td><input value="${line.qty}" data-col="qty" style="width:50px"></td>
             <td><input value="${line.prixBrut.toFixed(2)}" data-col="prix"></td>
@@ -576,9 +681,14 @@ function renderTable() {
             <td><input value="${codeComm}" data-col="codecomm"></td>
         `;
         tableBody.appendChild(tr);
+
+        totalQty += line.qty;
+        const brutLigne = line.qtyPacks * line.prixBrut;
+        totalBrutHT += brutLigne;
+        totalNetHT += brutLigne * (1 - line.remise / 100);
     });
 
-    // Totals footer
+    // Totals row
     const tfr = document.createElement('tr');
     tfr.className = 'totals-row';
     tfr.innerHTML = `
@@ -586,21 +696,16 @@ function renderTable() {
         <td>${totalQty}</td>
         <td>${totalBrutHT.toFixed(2)}</td>
         <td></td>
-        <td colspan="2" style="text-align:right">Net HT (avec remise) : <strong>${totalNetHT.toFixed(2)}</strong></td>
+        <td colspan="2" style="text-align:right">Net HT (avec remise) : ${totalNetHT.toFixed(2)}</td>
     `;
     tableFoot.appendChild(tfr);
 
     resultsCard.classList.remove('hidden');
     btnDownload.disabled = false;
-
-    const notFoundCount = allLines.filter(l => !lookupArticle(l.ean)).length;
-    let info = `${allLines.length} ligne(s)`;
-    if (notFoundCount > 0) info += ` | ${notFoundCount} EAN(s) non trouves`;
-    lineCountEl.textContent = info;
+    lineCountEl.textContent = `${allLines.length} ligne(s)`;
 }
 
-function escAttr(s) { return s.replace(/"/g, '&quot;'); }
-
+// Update table when boutique/code changes
 boutiqueSelect.addEventListener('change', () => { if (allLines.length) renderTable(); });
 codeCommercialInput.addEventListener('input', () => { if (allLines.length) renderTable(); });
 
@@ -609,12 +714,17 @@ codeCommercialInput.addEventListener('input', () => { if (allLines.length) rende
 // =====================================================
 function downloadCSV() {
     const rows = [];
-    tableBody.querySelectorAll('tr').forEach(tr => {
-        const row = Array.from(tr.querySelectorAll('input')).map(inp => inp.value);
+    const trs = tableBody.querySelectorAll('tr');
+
+    trs.forEach(tr => {
+        const inputs = tr.querySelectorAll('input');
+        const row = Array.from(inputs).map(inp => inp.value);
         rows.push(row);
     });
-    if (!rows.length) return;
 
+    if (rows.length === 0) return;
+
+    // CSV with semicolon separator (French Excel default)
     const csvContent = rows.map(row =>
         row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(';')
     ).join('\r\n');
@@ -622,8 +732,10 @@ function downloadCSV() {
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
+    const brand = BRANDS[marqueSelect.value];
+    const boutique = boutiqueSelect.value;
     a.href = url;
-    a.download = `import_${BRANDS[marqueSelect.value].name}_${boutiqueSelect.value}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `import_${brand.name}_${boutique}_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
 }
@@ -631,7 +743,10 @@ function downloadCSV() {
 // =====================================================
 // UTILITIES
 // =====================================================
-function showStatus(msg, type) { statusBar.textContent = msg; statusBar.className = type; }
+function showStatus(msg, type) {
+    statusBar.textContent = msg;
+    statusBar.className = type;
+}
 
 function clearAll() {
     allLines = [];
