@@ -345,6 +345,7 @@
         </div>
     </div>
 
+<script src="mappings.js"></script>
 <script type="module">
 // =====================================================
 // PDF.js setup
@@ -671,9 +672,14 @@ function renderTable() {
 
     const libelle = `CMD ${brand.name} ${boutique} ${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
+    // EAN mapping pour cette marque
+    const brandMappings = (typeof EAN_MAPPINGS !== 'undefined' && EAN_MAPPINGS[marqueSelect.value]) || {};
+
     allLines.forEach((line, idx) => {
         const prixComma = line.prixBrut.toFixed(2).replace('.', ',');
         const remiseInt = Math.round(line.remise);
+        const eanUVC = brandMappings[line.ean] || line.ean;
+        const eanMissing = line.ean && !brandMappings[line.ean];
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${idx + 1}</td>
@@ -682,7 +688,7 @@ function renderTable() {
             <td><input value="${dateStr}" data-col="date1"></td>
             <td><input value="${dateStr}" data-col="date2"></td>
             <td><input value="${libelle}" data-col="libelle"></td>
-            <td><input value="${line.ean}" data-col="ean"></td>
+            <td><input value="${eanUVC}" data-col="ean" ${eanMissing ? 'style="background:#fef3c7;border-color:#d97706" title="EAN pack non mappe"' : ''}></td>
             <td><input value="${line.qty}" data-col="qty" style="width:50px"></td>
             <td><input value="${prixComma}" data-col="prix"></td>
             <td><input value="${remiseInt}" data-col="remise" style="width:50px"></td>
