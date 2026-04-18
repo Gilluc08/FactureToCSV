@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture Reader - PDF vers CSV</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --radius: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.9375rem;
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .drop-zone-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone-text {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .drop-zone-text strong {
+            color: var(--primary);
+        }
+
+        .file-list {
+            margin-top: 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0;
+            color: var(--text-light);
+        }
+
+        .file-item .status {
+            font-weight: 600;
+        }
+
+        .file-item .status.done { color: var(--success); }
+        .file-item .status.error { color: var(--danger); }
+
+        #status-bar {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: none;
+            margin-bottom: 1rem;
+        }
+
+        #status-bar.info {
+            display: block;
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        #status-bar.success {
+            display: block;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        #status-bar.error {
+            display: block;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+
+        th {
+            background: var(--bg);
+            padding: 0.625rem 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td input {
+            width: 100%;
+            min-width: 60px;
+            padding: 0.25rem 0.375rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            background: transparent;
+        }
+
+        td input:hover {
+            border-color: var(--border);
+        }
+
+        td input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--card);
+        }
+
+        tr.sample {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover { background: #b91c1c; }
+
+        .line-count {
+            font-size: 0.8125rem;
+            color: var(--text-light);
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem 0.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facture Reader</h1>
+        <p class="subtitle">Extraction de factures fournisseurs PDF vers CSV pour import ERP</p>
+
+        <div class="card">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Marque</label>
+                    <select id="marque">
+                        <option value="baouw">Baouw</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Boutique</label>
+                    <select id="boutique">
+                        <option value="N01">Nantes (N01)</option>
+                        <option value="V01">Vannes (V01)</option>
+                        <option value="P01">Paris (P01)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Code Commercial</label>
+                    <input type="text" id="code-commercial" placeholder="Ex: CT50" value="">
+                </div>
+            </div>
+
+            <div class="drop-zone" id="drop-zone">
+                <div class="drop-zone-icon">&#128196;</div>
+                <div class="drop-zone-text">
+                    Glissez vos factures PDF ici ou <strong>cliquez pour parcourir</strong>
+                </div>
+                <input type="file" id="file-input" accept=".pdf" multiple style="display:none">
+                <div class="file-list" id="file-list"></div>
+            </div>
+        </div>
+
+        <div id="status-bar"></div>
+
+        <div class="card hidden" id="results-card">
+            <div class="btn-row" style="margin-bottom: 1rem;">
+                <button class="btn btn-primary" id="btn-download" disabled>Telecharger CSV</button>
+                <button class="btn btn-danger" id="btn-clear">Effacer</button>
+                <span class="line-count" id="line-count"></span>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>A: Type</th>
+                            <th>B: Etab.</th>
+                            <th>C: Commentaire</th>
+                            <th>D: Designation</th>
+                            <th>E: Reference</th>
+                            <th>F: EAN</th>
+                            <th>G: Qte</th>
+                            <th>H: Prix Brut HT</th>
+                            <th>I: Remise %</th>
+                            <th>J: Fournisseur</th>
+                            <th>K: Code Comm.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script type="module">
+// =====================================================
+// PDF.js setup
+// =====================================================
+const pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+
+// =====================================================
+// CONFIG
+// =====================================================
+const BRANDS = {
+    baouw: {
+        name: 'BAOUW',
+        fournisseur: 'BAOUW',
+        parser: parseBaouw,
+    }
+};
+
+// =====================================================
+// STATE
+// =====================================================
+let allLines = [];
+
+// =====================================================
+// DOM REFS
+// =====================================================
+const marqueSelect = document.getElementById('marque');
+const boutiqueSelect = document.getElementById('boutique');
+const codeCommercialInput = document.getElementById('code-commercial');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const fileListEl = document.getElementById('file-list');
+const statusBar = document.getElementById('status-bar');
+const resultsCard = document.getElementById('results-card');
+const tableBody = document.getElementById('table-body');
+const btnDownload = document.getElementById('btn-download');
+const btnClear = document.getElementById('btn-clear');
+const lineCountEl = document.getElementById('line-count');
+
+// =====================================================
+// EVENT LISTENERS
+// =====================================================
+dropZone.addEventListener('click', (e) => {
+    if (e.target === fileInput) return;
+    fileInput.click();
+});
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+});
+
+btnDownload.addEventListener('click', downloadCSV);
+btnClear.addEventListener('click', clearAll);
+
+// =====================================================
+// FILE HANDLING
+// =====================================================
+async function handleFiles(files) {
+    const pdfFiles = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
+    if (pdfFiles.length === 0) {
+        showStatus('Aucun fichier PDF detecte.', 'error');
+        return;
+    }
+
+    const brand = BRANDS[marqueSelect.value];
+    if (!brand) {
+        showStatus('Marque non supportee.', 'error');
+        return;
+    }
+
+    showStatus('Extraction en cours...', 'info');
+    fileListEl.innerHTML = '';
+
+    for (const file of pdfFiles) {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `<span>${file.name}</span> <span class="status">...</span>`;
+        fileListEl.appendChild(fileItem);
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const fullText = await extractPdfText(pdf);
+            const lines = brand.parser(fullText, file.name);
+
+            allLines.push(...lines);
+            fileItem.querySelector('.status').textContent = `${lines.length} lignes`;
+            fileItem.querySelector('.status').classList.add('done');
+        } catch (err) {
+            console.error(err);
+            fileItem.querySelector('.status').textContent = 'Erreur';
+            fileItem.querySelector('.status').classList.add('error');
+        }
+    }
+
+    if (allLines.length > 0) {
+        renderTable();
+        showStatus(`${allLines.length} lignes extraites de ${pdfFiles.length} fichier(s).`, 'success');
+    } else {
+        showStatus('Aucune ligne produit trouvee dans les PDF.', 'error');
+    }
+}
+
+async function extractPdfText(pdf) {
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+
+        const items = content.items.filter(item => item.str.trim() !== '');
+        if (items.length === 0) continue;
+
+        // Sort by Y (descending = top first) then X (ascending = left to right)
+        items.sort((a, b) => {
+            const dy = b.transform[5] - a.transform[5];
+            if (Math.abs(dy) > 3) return dy;
+            return a.transform[4] - b.transform[4];
+        });
+
+        // Group into lines (items within 3 units of Y are on the same line)
+        const lineGroups = [];
+        let currentLine = [items[0]];
+        let currentY = items[0].transform[5];
+
+        for (let j = 1; j < items.length; j++) {
+            const itemY = items[j].transform[5];
+            if (Math.abs(itemY - currentY) <= 3) {
+                currentLine.push(items[j]);
+            } else {
+                currentLine.sort((a, b) => a.transform[4] - b.transform[4]);
+                lineGroups.push(currentLine);
+                currentLine = [items[j]];
+                currentY = itemY;
+            }
+        }
+        if (currentLine.length > 0) {
+            currentLine.sort((a, b) => a.transform[4] - b.transform[4]);
+            lineGroups.push(currentLine);
+        }
+
+        // Build lines with gap-aware spacing
+        const lines = lineGroups.map(group => {
+            let result = group[0].str;
+            for (let k = 1; k < group.length; k++) {
+                const prev = group[k - 1];
+                const curr = group[k];
+                const prevEnd = prev.transform[4] + (prev.width || 0);
+                const gap = curr.transform[4] - prevEnd;
+                // Add space only if there's a meaningful gap between items
+                result += (gap > 2 ? ' ' : '') + curr.str;
+            }
+            return result;
+        });
+
+        fullText += lines.join('\n') + '\n';
+    }
+    return fullText;
+}
+
+// =====================================================
+// BAOUW PARSER
+// =====================================================
+function parseBaouw(text, filename) {
+    const lines = text.split('\n');
+    const products = [];
+
+    // Log extracted text for debugging (visible in browser console)
+    console.log(`[Baouw Parser] ${filename} - ${lines.length} lines extracted`);
+    console.log(text);
+
+    // Extract invoice date (pattern: DD/MM/YYYY after "Date de facture")
+    const invoiceDate = extractDate(lines);
+    console.log(`[Baouw Parser] Invoice date: ${invoiceDate}`);
+
+    // Reference pattern: starts with P- or U-, then 2 letters, dash, 2 letters, dash, 3 letters
+    const refPattern = /^([PU]-[A-Z]{2}-[A-Z]{2}-[A-Z]{3})\b/;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const refMatch = line.match(refPattern);
+        if (!refMatch) continue;
+
+        const ref = refMatch[1];
+
+        // Extract EAN: 13 digits starting with 376
+        // In some PDFs, EAN and SH code are merged without space
+        const eanMatch = line.match(/(376\d{10})/);
+        const ean = eanMatch ? eanMatch[1] : '';
+
+        // Extract numeric fields after the country (France/Espagne)
+        const numbersSection = extractNumbersAfterCountry(line);
+
+        if (numbersSection) {
+            const { qty, prixBrut, remise } = numbersSection;
+
+            // Skip free samples (100% discount)
+            if (remise >= 100) {
+                console.log(`[Baouw Parser] Skipped sample: ${ref} (${remise}%)`);
+                continue;
+            }
+
+            products.push({
+                reference: ref,
+                ean: ean,
+                qty: qty,
+                prixBrut: prixBrut,
+                remise: remise,
+                source: filename,
+                invoiceDate: invoiceDate,
+            });
+        } else {
+            console.warn(`[Baouw Parser] Could not parse numbers for: ${ref}`, line);
+        }
+    }
+
+    console.log(`[Baouw Parser] ${products.length} products extracted from ${filename}`);
+    return products;
+}
+
+function extractDate(lines) {
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes('Date de facture') || lines[i].includes('date de facture')) {
+            // Check same line first (pdf.js might merge header + values)
+            const sameLine = lines[i].match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (sameLine) {
+                return `${sameLine[1]}-${sameLine[2]}`;
+            }
+            // Then check next line
+            const nextLine = lines[i + 1] || '';
+            const dateMatch = nextLine.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (dateMatch) {
+                return `${dateMatch[1]}-${dateMatch[2]}`;
+            }
+            // Check 2 lines ahead (in case of blank line)
+            const nextLine2 = lines[i + 2] || '';
+            const dateMatch2 = nextLine2.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (dateMatch2) {
+                return `${dateMatch2[1]}-${dateMatch2[2]}`;
+            }
+        }
+    }
+    return '';
+}
+
+function extractNumbersAfterCountry(line) {
+    // Find the section after France or Espagne
+    // Handle both "France" and "49France" (merged SH code + country)
+    const countryMatch = line.match(/(?:France|Espagne)\s+(.*)/);
+    if (!countryMatch) return null;
+
+    const rest = countryMatch[1].trim();
+
+    // Strategy: extract all numeric tokens from the rest of the line
+    // Expected order: QTY  PRIX_BRUT  REM%  PRIX_NET  TVA%  TOTAL
+    // Prices use comma (54,90) or dot (49.41), TVA has % sign
+
+    // Try structured pattern first:
+    // QTY(int)  PRIX_BRUT(dd,dd)  REM%(dd,dd)  PRIX_NET(dd.dd)  TVA(d,d%)  TOTAL(dd,dd)
+    const structured = rest.match(
+        /(\d+)\s+(\d+[,.]\d+)\s+(\d+[,.]\d+)\s+(\d+[.,]\d+)\s+\d+[,.]?\d*%/
+    );
+
+    if (structured) {
+        return {
+            qty: parseInt(structured[1]),
+            prixBrut: parseDecimal(structured[2]),
+            remise: parseDecimal(structured[3]),
+        };
+    }
+
+    // Fallback: more lenient - just find QTY then two decimal numbers
+    const fallback = rest.match(/(\d+)\s+(\d+[,.]\d+)\s+(\d+[,.]\d+)/);
+    if (fallback) {
+        return {
+            qty: parseInt(fallback[1]),
+            prixBrut: parseDecimal(fallback[2]),
+            remise: parseDecimal(fallback[3]),
+        };
+    }
+
+    return null;
+}
+
+function parseDecimal(str) {
+    // Handle both comma and dot as decimal separator
+    return parseFloat(str.replace(',', '.'));
+}
+
+// =====================================================
+// TABLE RENDERING
+// =====================================================
+function renderTable() {
+    const boutique = boutiqueSelect.value;
+    const codeComm = codeCommercialInput.value.trim();
+    const brand = BRANDS[marqueSelect.value];
+
+    tableBody.innerHTML = '';
+
+    allLines.forEach((line, idx) => {
+        const comment = `${boutique}, ${brand.name}, ${line.invoiceDate}`;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td><input value="CFFC1_" data-col="type" readonly></td>
+            <td><input value="${boutique}" data-col="etab" readonly></td>
+            <td><input value="${comment}" data-col="comment"></td>
+            <td><input value="${comment}" data-col="designation"></td>
+            <td><input value="${line.reference}" data-col="ref"></td>
+            <td><input value="${line.ean}" data-col="ean"></td>
+            <td><input value="${line.qty}" data-col="qty" style="width:50px"></td>
+            <td><input value="${line.prixBrut.toFixed(2)}" data-col="prix"></td>
+            <td><input value="${line.remise.toFixed(2)}" data-col="remise" style="width:60px"></td>
+            <td><input value="${brand.fournisseur}" data-col="fournisseur" readonly></td>
+            <td><input value="${codeComm}" data-col="codecomm"></td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    resultsCard.classList.remove('hidden');
+    btnDownload.disabled = false;
+    lineCountEl.textContent = `${allLines.length} ligne(s)`;
+}
+
+// Update table when boutique/code changes
+boutiqueSelect.addEventListener('change', () => { if (allLines.length) renderTable(); });
+codeCommercialInput.addEventListener('input', () => { if (allLines.length) renderTable(); });
+
+// =====================================================
+// CSV GENERATION
+// =====================================================
+function downloadCSV() {
+    const rows = [];
+    const trs = tableBody.querySelectorAll('tr');
+
+    trs.forEach(tr => {
+        const inputs = tr.querySelectorAll('input');
+        const row = Array.from(inputs).map(inp => inp.value);
+        rows.push(row);
+    });
+
+    if (rows.length === 0) return;
+
+    // CSV with semicolon separator (French Excel default)
+    const csvContent = rows.map(row =>
+        row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(';')
+    ).join('\r\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const brand = BRANDS[marqueSelect.value];
+    const boutique = boutiqueSelect.value;
+    a.href = url;
+    a.download = `import_${brand.name}_${boutique}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// =====================================================
+// UTILITIES
+// =====================================================
+function showStatus(msg, type) {
+    statusBar.textContent = msg;
+    statusBar.className = type;
+}
+
+function clearAll() {
+    allLines = [];
+    tableBody.innerHTML = '';
+    resultsCard.classList.add('hidden');
+    fileListEl.innerHTML = '';
+    fileInput.value = '';
+    statusBar.className = '';
+    statusBar.style.display = 'none';
+    btnDownload.disabled = true;
+    lineCountEl.textContent = '';
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Fichiers PDF de test (ne pas versionner)
+*.pdf
+
+# Excel template
+*.xlsx
+
+# OS
+Thumbs.db
+.DS_Store
