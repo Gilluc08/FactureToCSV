@@ -327,9 +327,9 @@
                             <th>#</th>
                             <th>A: Type</th>
                             <th>B: Etab.</th>
-                            <th>C: Commentaire</th>
-                            <th>D: Designation</th>
-                            <th>E: Reference</th>
+                            <th>C: Date</th>
+                            <th>D: Date</th>
+                            <th>E: Libelle</th>
                             <th>F: EAN</th>
                             <th>G: Qte</th>
                             <th>H: Prix Brut HT</th>
@@ -663,20 +663,29 @@ function renderTable() {
 
     let totalQty = 0, totalBrutHT = 0, totalNetHT = 0;
 
+    // Date du jour au format DDMMYYYY
+    const now = new Date();
+    const dateStr = String(now.getDate()).padStart(2,'0')
+        + String(now.getMonth()+1).padStart(2,'0')
+        + now.getFullYear();
+
+    const libelle = `CMD Regul ${brand.name}`;
+
     allLines.forEach((line, idx) => {
-        const comment = `${boutique}, ${brand.name}, ${line.invoiceDate}`;
+        const prixComma = line.prixBrut.toFixed(2).replace('.', ',');
+        const remiseInt = Math.round(line.remise);
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${idx + 1}</td>
             <td><input value="CFFC1_" data-col="type" readonly></td>
             <td><input value="${boutique}" data-col="etab" readonly></td>
-            <td><input value="${comment}" data-col="comment"></td>
-            <td><input value="${comment}" data-col="designation"></td>
-            <td><input value="${line.reference}" data-col="ref"></td>
+            <td><input value="${dateStr}" data-col="date1"></td>
+            <td><input value="${dateStr}" data-col="date2"></td>
+            <td><input value="${libelle}" data-col="libelle"></td>
             <td><input value="${line.ean}" data-col="ean"></td>
             <td><input value="${line.qty}" data-col="qty" style="width:50px"></td>
-            <td><input value="${line.prixBrut.toFixed(2)}" data-col="prix"></td>
-            <td><input value="${line.remise.toFixed(2)}" data-col="remise" style="width:60px"></td>
+            <td><input value="${prixComma}" data-col="prix"></td>
+            <td><input value="${remiseInt}" data-col="remise" style="width:50px"></td>
             <td><input value="${brand.fournisseur}" data-col="fournisseur" readonly></td>
             <td><input value="${codeComm}" data-col="codecomm"></td>
         `;
