@@ -538,11 +538,18 @@ function parseBaouw(text, filename) {
         const eanMatch = line.match(/(376\d{10})/);
         const ean = eanMatch ? eanMatch[1] : '';
 
+        // Extract units per pack from description: (x9), (x20), (x12), etc.
+        const unitsMatch = line.match(/\(x(\d+)\)/);
+        const unitsPerPack = unitsMatch ? parseInt(unitsMatch[1]) : 1;
+
         // Extract numeric fields after the country (France/Espagne)
         const numbersSection = extractNumbersAfterCountry(line);
 
         if (numbersSection) {
-            const { qty, prixBrut, remise } = numbersSection;
+            const { qty: qtyPacks, prixBrut, remise } = numbersSection;
+
+            // Real quantity = number of packs × units per pack
+            const qty = qtyPacks * unitsPerPack;
 
             // Skip free samples (100% discount)
             if (remise >= 100) {
