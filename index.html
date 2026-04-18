@@ -669,7 +669,7 @@ function renderTable() {
         + String(now.getMonth()+1).padStart(2,'0')
         + now.getFullYear();
 
-    const libelle = `CMD ${brand.name} ${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const libelle = `CMD ${brand.name} ${boutique} ${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
     allLines.forEach((line, idx) => {
         const prixComma = line.prixBrut.toFixed(2).replace('.', ',');
