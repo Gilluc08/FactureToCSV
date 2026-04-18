@@ -285,6 +285,7 @@
                     <label>Marque</label>
                     <select id="marque">
                         <option value="baouw">Baouw</option>
+                        <option value="overstims">Overstims</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -362,7 +363,12 @@ const BRANDS = {
         name: 'BAOUW',
         fournisseur: 'BAOUW',
         parser: parseBaouw,
-    }
+    },
+    overstims: {
+        name: 'OVERSTIMS',
+        fournisseur: 'OVERSTIMS',
+        parser: parseOverstims,
+    },
 };
 
 // =====================================================
@@ -649,8 +655,77 @@ function extractNumbersAfterCountry(line) {
 }
 
 function parseDecimal(str) {
-    // Handle both comma and dot as decimal separator
     return parseFloat(str.replace(',', '.'));
+}
+
+// =====================================================
+// OVERSTIMS PARSER
+// =====================================================
+function parseOverstims(text, filename) {
+    const lines = text.split('\n');
+    const products = [];
+
+    console.log(`[Overstims Parser] ${filename} - ${lines.length} lines`);
+    console.log(text);
+
+    const invoiceDate = extractDateOverstims(lines);
+    console.log(`[Overstims Parser] Invoice date: ${invoiceDate}`);
+
+    // Find product zone: between header line and totals line
+    let inProducts = false;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+
+        // Start after column header
+        if (/R.f.rence\s+D.signation\s+Qt/i.test(line)) {
+            inProducts = true;
+            continue;
+        }
+        // Stop at totals
+        if (/^Taux\s+Base\s+Montant/i.test(line)) break;
+
+        if (!inProducts) continue;
+
+        // Match product line: REF DESCRIPTION QTY,000 PRICE € [REMISE%] ...
+        const m = line.match(/^(\S+)\s+(.+?)\s+(\d+),000\s+(\d+,\d{2})\s*€(?:\s+(\d+)%)?/);
+        if (!m) continue;
+
+        const ref = m[1];
+        const qty = parseInt(m[3]);
+        const prixBrut = parseDecimal(m[4]);
+        const remise = m[5] ? parseInt(m[5]) : 0;
+
+        // Skip free items / packaging headers / zero price
+        if (prixBrut === 0) continue;
+        if (remise >= 100) continue;
+
+        products.push({
+            reference: ref,
+            ean: '',
+            qty: qty,
+            qtyPacks: qty,
+            prixBrut: prixBrut,
+            prixBrutPack: prixBrut * qty,
+            remise: remise,
+            source: filename,
+            invoiceDate: invoiceDate,
+        });
+    }
+
+    console.log(`[Overstims Parser] ${products.length} products from ${filename}`);
+    return products;
+}
+
+function extractDateOverstims(lines) {
+    for (const line of lines) {
+        // Format: BL439404 15/04/26 or DD/MM/YY or DD/MM/YYYY
+        const m = line.match(/(\d{2})\/(\d{2})\/(\d{2,4})/);
+        if (m && /^BL\d|^\d+\s/.test(line.trim())) {
+            return `${m[1]}-${m[2]}`;
+        }
+    }
+    return '';
 }
 
 // =====================================================
